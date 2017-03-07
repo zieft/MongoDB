@@ -9,7 +9,7 @@
 # so the returned list should have 10 entries!
 import os
 
-DATADIR = ""
+DATADIR = "C:\\Users\\zieft\\Dropbox\\PyCharmProjects_WIN\\MongoDB\\"
 DATAFILE = "beatles-diskography.csv"
 
 
