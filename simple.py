@@ -9,15 +9,25 @@
 # so the returned list should have 10 entries!
 import os
 
-DATADIR = ""
+DATADIR = "C:\\Users\\zieft\\Dropbox\\PyCharmProjects_WIN\\MongoDB\\"
 DATAFILE = "beatles-diskography.csv"
 
 
 def parse_file(datafile):
     data = []
+    raw_text = []
     with open(datafile, "r") as f:
         for line in f:
-            print line
+            raw_text.append(line)
+    keys = raw_text[0].rstrip().split(',')
+    values = []
+    for line in raw_text[1:11]:
+        values.append(line.rstrip())
+
+    for line in values:
+        line_list = line.split(',')
+        line_dict = dict(zip(keys, line_list))
+        data.append(line_dict)
 
     return data
 
