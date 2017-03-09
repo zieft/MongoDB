@@ -15,15 +15,20 @@ You should only change the parse_file function.
 import csv
 import os
 
-DATADIR = ""
+DATADIR = "C:\\Users\\zieft\\Dropbox\\PyCharmProjects_WIN\\MongoDB\\problemset1"
 DATAFILE = "745090.csv"
 
 
 def parse_file(datafile):
-    name = ""
     data = []
     with open(datafile,'rb') as f:
-        pass
+        c = csv.reader(f)
+        _list = []
+        for line in c:
+            _list.append(line)
+    name = _list[0][1]
+    for i in _list[2:]:
+        data.append(i)
     # Do not change the line below
     return (name, data)
 
@@ -31,6 +36,7 @@ def parse_file(datafile):
 def test():
     datafile = os.path.join(DATADIR, DATAFILE)
     name, data = parse_file(datafile)
+
 
     assert name == "MOUNTAIN VIEW MOFFETT FLD NAS"
     assert data[0][1] == "01:00"
