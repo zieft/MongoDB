@@ -8,9 +8,9 @@ def parse_file(datafile, r=2, c=3, start_rowx=1, end_rowx=3):
     workbook = xlrd.open_workbook(datafile)
     sheet = workbook.sheet_by_index(0)
 
-    data = [[sheet.cell_value(r, col)
-             for col in range(sheet.ncols)]
-            for r in range(sheet.nrows)]
+    data = [[sheet.cell_value(row_, col_)
+             for col_ in range(sheet.ncols)]
+            for row_ in range(sheet.nrows)]
 
     print "\nList Comprehension"
     print "data[{}][{}]:".format(r, c),

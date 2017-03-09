@@ -11,7 +11,7 @@ Please see the test function for the expected return format
 import xlrd
 from zipfile import ZipFile
 
-datafile = "2013_ERCOT_Hourly_Load_Data.xls"
+datafile = "C:\\Users\\zieft\\Dropbox\\PyCharmProjects_WIN\\MongoDB\\lesson_1\\2013_ERCOT_Hourly_Load_Data.xls"
 
 
 def open_zip(datafile):
@@ -46,7 +46,6 @@ def parse_file(datafile):
     # print "Convert time to a Python datetime tuple, from the Excel float:",
     # print xlrd.xldate_as_tuple(exceltime, 0)
 
-
     data = {
         'maxtime': (0, 0, 0, 0, 0, 0),
         'maxvalue': 0,
@@ -54,11 +53,38 @@ def parse_file(datafile):
         'minvalue': 0,
         'avgcoast': 0
     }
+    coast_values_in_col = sheet.col_values(1, start_rowx=1, end_rowx=sheet.nrows)
+    enumerated_coast_values = enumerate(coast_values_in_col)
+
+    max_index = 0
+    max_value = 0
+    for i in enumerated_coast_values:
+        _index, _value = i
+        if _value > max_value:
+            max_value = _value
+            max_index = int(_index) + 1  # add the title line
+    data['maxvalue'] = max_value
+    data['maxtime'] = xlrd.xldate_as_tuple(sheet.cell_value(max_index, 0), 0)
+
+    enumerated_coast_values = enumerate(coast_values_in_col)  # enumerated data can be used only once?
+    min_index = 0
+    min_value = max_value
+    for i in enumerated_coast_values:
+        _index, _value = i
+        if _value < min_value:
+            min_value = _value
+            min_index = int(_index) + 1  # add the title line
+
+    data['minvalue'] = min_value
+    data['mintime'] = xlrd.xldate_as_tuple(sheet.cell_value(min_index, 0), 0)
+
+    data['avgcoast'] = sum(coast_values_in_col) / (sheet.nrows - 1)  # minuse the title line
+
     return data
 
 
 def test():
-    open_zip(datafile)
+    # open_zip(datafile)
     data = parse_file(datafile)
 
     assert data['maxtime'] == (2013, 8, 13, 17, 0, 0)
