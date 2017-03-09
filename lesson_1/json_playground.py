@@ -54,7 +54,7 @@ def main():
     the structure one level at a time or copy the output to a separate output
     file.
     '''
-    results = query_by_name(ARTIST_URL, query_type["simple"], "Nirvana")
+    results = query_by_name(ARTIST_URL, query_type["simple"], "beatles")
     pretty_print(results)
 
     artist_id = results["artists"][1]["id"]
