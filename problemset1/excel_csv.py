@@ -66,16 +66,16 @@ def parse_file(datafile):
 
 def save_file(data, filename):
     with open(outfile, 'w') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        spamwriter.writerow(['Spam'] * 5 + ['Baked Beans'])
-        spamwriter.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
+        spamwriter = csv.writer(csvfile, delimiter='|', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for row in data:
+            spamwriter.writerow(row)
 
 
 # YOUR CODE HERE
 
 
 def test():
-    open_zip(datafile)
+    #open_zip(datafile)
     data = parse_file(datafile)
     save_file(data, outfile)
 
@@ -118,11 +118,6 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    parse_file(datafile)
+    save_file(data, outfile)
 
-import csv
-
-with open('eggs.csv', 'w') as csvfile:
-    spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    spamwriter.writerow(['Spam'] * 5 + ['Baked Beans'])
-    spamwriter.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
