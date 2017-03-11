@@ -39,17 +39,29 @@ def get_from_file(kind, period):
 
 
 def my_article_overview(kind, period):
+    """
+    used to treat the dataset download direct from URL
+    :param kind:
+    :param period:
+    :return:
+    """
     data = get_from_file(kind, period)
     titles = []
     urls = []
     for i in range(20):
         _section = data['results'][i]['section'].encode('utf-8')
         _title = data['results'][i]['title'].encode('utf-8').replace('\xe2\x80\x99', "'").replace('\xe2\x80\x98', "'")
-        titles.append(dict([[_section, _title]]))
+        titles.append(dict([[_section, _title]]))  # !!!
         urls.append(data['results'][i]['url'].encode('utf-8'))
     return (titles, urls)
 
 def article_overview(kind, period):
+    """
+    used to treat the local data 'popular-viewed-1.json'
+    :param kind:
+    :param period:
+    :return:
+    """
     data = get_from_file(kind, period)
     titles = []
     urls =[]
@@ -57,7 +69,7 @@ def article_overview(kind, period):
     for article in data:
         section = article["section"]
         title = article["title"]
-        titles.append({section: title})
+        titles.append({section: title})  #!!!
         if "media" in article:
             for m in article["media"]:
                 for mm in m["media-metadata"]:
