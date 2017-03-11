@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This exercise shows some important concepts that you should be aware about:
@@ -13,7 +12,7 @@ without doing so, as we have provided a sample result. (See the file
 
 Your task is to modify the article_overview() function to process the saved
 file that represents the most popular articles (by view count) from the last
-day, and return a tuple of variables containing the following data:
+day, and return a TUPLE of variables containing the following data:
 - labels: list of dictionaries, where the keys are the "section" values and
   values are the "title" values for each of the retrieved articles.
 - urls: list of URLs for all 'media' entries with "format": "Standard Thumbnail"
@@ -29,8 +28,8 @@ import requests
 
 URL_MAIN = "http://api.nytimes.com/svc/"
 URL_POPULAR = URL_MAIN + "mostpopular/v2/"
-API_KEY = {"popular": "",
-           "article": ""}
+API_KEY = {"popular": "521d4e7f01a34442a1c5a0ff349e9368",
+           "article": "521d4e7f01a34442a1c5a0ff349e9368"}
 
 
 def get_from_file(kind, period):
@@ -43,16 +42,26 @@ def article_overview(kind, period):
     data = get_from_file(kind, period)
     titles = []
     urls = []
-    # YOUR CODE HERE
-
+    for i in range(20):
+        _section = data['results'][i]['section'].encode('utf-8')
+        _title = data['results'][i]['title'].encode('utf-8').replace('\xe2\x80\x99', "'").replace('\xe2\x80\x98', "'")
+        titles.append(dict([[_section, _title]]))
+        urls.append(data['results'][i]['url'].encode('utf-8'))
     return (titles, urls)
 
 
 def query_site(url, target, offset):
-    # This will set up the query with the API key and offset
-    # Web services often use offset paramter to return data in small chunks
-    # NYTimes returns 20 articles per request, if you want the next 20
-    # You have to provide the offset parameter
+    """
+    This will set up the query with the API key and offset
+    Web services often use offset paramter to return data in small chunks
+    NYTimes returns 20 articles per request, if you want the next 20
+    You have to provide the offset parameter
+    :param url:
+    :param target: 'popular / article'
+    :param offset:
+    :return:
+    """
+
     if API_KEY["popular"] == "" or API_KEY["article"] == "":
         print "You need to register for NYTimes Developer account to run this program."
         print "See Intructor notes for information"
@@ -67,8 +76,16 @@ def query_site(url, target, offset):
 
 
 def get_popular(url, kind, days, section="all-sections", offset=0):
-    # This function will construct the query according to the requirements of the site
-    # and return the data, or print an error message if called incorrectly
+    """
+    This function will construct the query according to the requirements of the site
+    and return the data, or print an error message if called incorrectly
+    :param url:
+    :param kind:
+    :param days:
+    :param section:
+    :param offset:
+    :return: a python dictionary with 4 keys [u'status', u'num_results', u'results', u'copyright']
+    """
     if days not in [1, 7, 30]:
         print "Time period can be 1,7, 30 days only"
         return False
@@ -83,8 +100,13 @@ def get_popular(url, kind, days, section="all-sections", offset=0):
 
 
 def save_file(kind, period):
-    # This will process all results, by calling the API repeatedly with supplied offset value,
-    # combine the data and then write all results in a file.
+    """
+    This will process all results, by calling the API repeatedly with supplied offset value,
+    combine the data and then write all results in a file.
+    :param kind:
+    :param period:
+    :return:
+    """
     data = get_popular(URL_POPULAR, "viewed", 1)
     num_results = data["num_results"]
     full_data = []
@@ -101,6 +123,7 @@ def test():
     assert len(titles) == 20
     assert len(urls) == 30
     assert titles[2] == {'Opinion': 'Professors, We Need You!'}
+
     assert urls[20] == 'http://graphics8.nytimes.com/images/2014/02/17/sports/ICEDANCE/ICEDANCE-thumbStandard.jpg'
 
 
