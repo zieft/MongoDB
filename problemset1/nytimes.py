@@ -49,8 +49,8 @@ def my_article_overview(kind, period):
     titles = []
     urls = []
     for i in range(20):
-        _section = data['results'][i]['section'].encode('utf-8')
-        _title = data['results'][i]['title'].encode('utf-8').replace('\xe2\x80\x99', "'").replace('\xe2\x80\x98', "'")
+        _section = data['results'][i]['section']#.encode('utf-8') 根据测试，没必要把unicode转换成utf-8，更没有必要将其中的"乱码替换掉"
+        _title = data['results'][i]['title']#.encode('utf-8').replace('\xe2\x80\x99', "'").replace('\xe2\x80\x98', "'")
         titles.append(dict([[_section, _title]]))  # !!!
         urls.append(data['results'][i]['url'].encode('utf-8'))
     return (titles, urls)
