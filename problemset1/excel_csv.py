@@ -142,5 +142,4 @@ def save_file(data, filename):
 
 
 if __name__ == "__main__":
-    parse_file(datafile)
-    save_file(data, outfile)
+    save_file(parse_file(datafile), outfile)
