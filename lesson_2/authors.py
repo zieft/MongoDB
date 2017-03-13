@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Your task here is to extract data from xml on authors of an article
 # and add it to a list, one item for an author.
 # See the provided data structure for the expected format.
