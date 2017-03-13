@@ -17,9 +17,9 @@ def get_authors(root):
     authors = []
     for author in root.findall('./fm/bibl/aug/au'):
         data = {}
-        data['fnm'] = author.find("fnm")
-        data['snm'] = author.find("snm")
-        data['email'] = author.find("email")
+        data['fnm'] = author.find("fnm").text
+        data['snm'] = author.find("snm").text
+        data['email'] = author.find("email").text
         authors.append(data)
 
     return authors
