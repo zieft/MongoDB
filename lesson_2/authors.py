@@ -25,7 +25,7 @@ def my_get_authors(root):
     return authors
 
 
-def get_author(root):
+def get_authors(root):
     authors = []
     for author in root.findall('./fm/bibl/aug/au'):
         data = {
