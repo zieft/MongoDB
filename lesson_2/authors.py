@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 # Your task here is to extract data from xml on authors of an article
 # and add it to a list, one item for an author.
 # See the provided data structure for the expected format.
 # The tags for first name, surname and email should map directly
-# to the dictionary keys
+# to the dictionary keys, but you have to extract the attributes from the "insr" tag
+# and add them to the list for the dictionary key "insr"
 import xml.etree.ElementTree as ET
 
 article_file = "exampleResearchArticle.xml"
@@ -15,11 +17,14 @@ def get_root(fname):
 
 def my_get_authors(root):
     authors = []
-    for author in root.findall('./fm/bibl/aug/au'):
+    for author in root.findall('./fm/bibl/aug/au'):  # 提取文本的方法
         data = {}
         data['fnm'] = author.find("fnm").text
         data['snm'] = author.find("snm").text
         data['email'] = author.find("email").text
+        data['insr'] = []  # 将字典内部的list直接初始化在字典里面，大大简化了后面的工作
+        for i in author.findall('insr'):
+            data['insr'].append(i.attrib['iid'])  # 提取tag的方法
         authors.append(data)
 
     return authors
