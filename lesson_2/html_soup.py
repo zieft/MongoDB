@@ -26,6 +26,20 @@ def my_extract_data(page):
     return data
 
 
+def extract_data(page):
+    data = {"eventvalidation": "",
+            "viewstate": ""}
+    with open(page, "r") as html:  # 给出的答案是读取本地文件的例子，不再详细讨论
+        soup = bs(html, "lxml")  # 这个lxml参数不能少，不知道为什么
+        ev = soup.find(id="__EVENTVALIDATION")
+        data["eventvalidation"] = ev["value"]
+
+        vs = soup.find(id="__VIEWSTATE")
+        data["viewstate"] = vs["value"]
+
+    return data
+
+
 def make_request(data):
     eventvalidation = data["eventvalidation"]
     viewstate = data["viewstate"]
