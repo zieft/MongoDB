@@ -27,10 +27,17 @@ def my_extract_data(page):
 
 
 def extract_data(page):
+    """
+
+    :param page:
+    :arg lxml:“lxml”，来自 Python 库 'lxml' 中的语法分析器,也可以使用其他语法分析器
+              详见http://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
+    :return:
+    """
     data = {"eventvalidation": "",
             "viewstate": ""}
     with open(page, "r") as html:  # 给出的答案是读取本地文件的例子，不再详细讨论
-        soup = bs(html, "lxml")  # 这个lxml参数不能少，不知道为什么
+        soup = bs(html, "lxml")  ###
         ev = soup.find(id="__EVENTVALIDATION")
         data["eventvalidation"] = ev["value"]
 
