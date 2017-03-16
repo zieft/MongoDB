@@ -66,6 +66,31 @@ def make_request(data):
     return r.text
 
 
+def request_sessions(URL):
+    s = requests.Session()
+
+    r = s.get(URL)
+    soup = bs(r.text)
+    viewstate_element = soup.find(id='__VIEWSTATE')
+    viewstate = viewstate_element['value']
+    eventvalidation_element = soup.find(id='__EVENTVALIDATION')
+    eventvalidation = eventvalidation_element['value']
+    viewstategenerator_element = soup.find(id='__VIEWSTATEGENERATOR')
+    viewstategenerator = viewstategenerator_element['value']
+
+    r = s.post(URL, data={
+        'AirportList': 'BOS',
+        'CarrierList': 'VX',
+        'Submit': 'Submit',
+        '__EVENTTARGET': '',
+        '__EVENTARGUMENT': '',
+        '__EVENTVALIDATION': eventvalidation,
+        '__VIEWSTATEGENERATOR': viewstategenerator,
+        '__VIEWSTATE': viewstate
+    })
+    return r
+
+
 def test():
     data = extract_data(html_page)
     assert data["eventvalidation"] != ""
