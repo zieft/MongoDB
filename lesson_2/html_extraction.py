@@ -8,7 +8,7 @@ file = requests.get(URL)
 def options(soup, id):
     options_values = []
     carrier_list = soup.find(id=id)
-    for option in carrier_list.findall('option'):
+    for option in carrier_list.find_all('option'):
         options_values.append(option['value'])
     return options_values
 
@@ -27,3 +27,6 @@ def main():
 
     codes = options(soup, 'AirportList')
     print_list("Airports", codes)
+
+if __name__ == '__main__':
+    main()
