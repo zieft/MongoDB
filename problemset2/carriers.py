@@ -21,7 +21,7 @@ URL = 'https://www.transtats.bts.gov/Data_Elements.aspx?Data=2'
 html_page = requests.get(URL)
 
 
-def my_extract_carriers(page):
+def extract_carriers(page):
     data = []
     soup = bs(page.text)
     carrier_list = soup.find(id='CarrierList')
