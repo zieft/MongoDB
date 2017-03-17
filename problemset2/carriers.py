@@ -28,7 +28,7 @@ def my_extract_carriers(page):
     all_options = carrier_list.find_all('option')
     for i in range(3, len(all_options)):
         print all_options[i].text
-        data.append(all_options[i].text)
+        data.append(all_options[i]['value'])  # 将['value']替换成.text即可提取所有航空公司的全名
 
     return data
 
@@ -44,7 +44,7 @@ for i in range(3, len(all_options)):
 
 
 def make_request(data):
-    s = Requests.Session()
+    s = requests.Session()
 
     eventvalidation = data["eventvalidation"]
     viewstate = data["viewstate"]
@@ -63,6 +63,8 @@ def make_request(data):
                      ("Submit", "Submit")))
 
     return r.text
+
+
 
 
 def test():
