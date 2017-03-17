@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Your task in this exercise is to modify 'extract_carrier()` to get a list of
@@ -15,35 +14,53 @@ Please note that the function 'make_request()' is provided for your reference
 only. You will not be able to to actually use it from within the Udacity web UI.
 """
 
-from bs4 import BeautifulSoup
-html_page = "options.html"
+from bs4 import BeautifulSoup as bs
+import requests
+
+URL = 'https://www.transtats.bts.gov/Data_Elements.aspx?Data=2'
+html_page = requests.get(URL)
 
 
-def extract_carriers(page):
+def my_extract_carriers(page):
     data = []
-
-    with open(page, "r") as html:
-        # do something here to find the necessary values
-        soup = BeautifulSoup(html, "lxml")
+    soup = bs(page.text)
+    carrier_list = soup.find(id='CarrierList')
+    all_options = carrier_list.find_all('option')
+    for i in range(3, len(all_options)):
+        print all_options[i].text
+        data.append(all_options[i].text)
 
     return data
 
 
+data = []
+soup = bs(html_page.text)
+carrier_list = soup.find(id='CarrierList')
+all_options = carrier_list.find_all('option')
+for i in range(3, len(all_options)):
+    print all_options[i].text
+    data.append(all_options[i].text)
+
+
+
 def make_request(data):
+    s = Requests.Session()
+
     eventvalidation = data["eventvalidation"]
     viewstate = data["viewstate"]
     airport = data["airport"]
+    viewstategenerator = data['viewstategenerator']
     carrier = data["carrier"]
 
     r = s.post("https://www.transtats.bts.gov/Data_Elements.aspx?Data=2",
-               data = (("__EVENTTARGET", ""),
-                       ("__EVENTARGUMENT", ""),
-                       ("__VIEWSTATE", viewstate),
-                       ("__VIEWSTATEGENERATOR",viewstategenerator),
-                       ("__EVENTVALIDATION", eventvalidation),
-                       ("CarrierList", carrier),
-                       ("AirportList", airport),
-                       ("Submit", "Submit")))
+               data=(("__EVENTTARGET", ""),
+                     ("__EVENTARGUMENT", ""),
+                     ("__VIEWSTATE", viewstate),
+                     ("__VIEWSTATEGENERATOR", viewstategenerator),
+                     ("__EVENTVALIDATION", eventvalidation),
+                     ("CarrierList", carrier),
+                     ("AirportList", airport),
+                     ("Submit", "Submit")))
 
     return r.text
 
@@ -53,6 +70,7 @@ def test():
     assert len(data) == 16
     assert "FL" in data
     assert "NK" in data
+
 
 if __name__ == "__main__":
     test()
