@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # So, the problem is that the gigantic file is actually not a valid XML, because
 # it has several root elements, and XML declarations.
@@ -25,8 +24,30 @@ def split_file(filename):
     The new files should be saved with filename in the following format:
     "{}-{}".format(filename, n) where n is a counter, starting from 0.
     """
+    with open(filename, 'r') as f:
+        header = f.readline()
+        line = header
+        i = 0
+        while line == header:
+        ## 如果line == header
+            fout = open('{}-{}'.format(filename, i), 'w')
+            fout.write(line)
+            ## 打开一个新文件
+            i += 1
+            ## 计数器加一
+            line = f.readline()
+            ## 读取下一行
+            while line != header and line:
+                ## 如果line != header
+                fout.write(line)
+                ## 将line写入文件
+                line = f.readline()
+                ## 读取下一行
+                #print line
+            else:
+                fout.close()
+                ## 关闭文件
 
-    pass
 
 
 def test():
