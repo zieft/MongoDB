@@ -92,7 +92,7 @@ def process_file(input_file, output_good, output_bad):
                 else:
                     data_bad.append(row)
             except ValueError: # non-numeric strings caught by exception
-                if ps_year == 'NULL':
+                if ps_year == 'NULL':  # This is kind of tricky!
                     data_bad.append(row)
 
     # Write processed data to output files
