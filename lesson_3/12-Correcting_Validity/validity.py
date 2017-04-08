@@ -19,31 +19,60 @@ You can write helper functions for checking the data and writing the files, but 
 import csv
 import pprint
 
-INPUT_FILE = 'autos.csv'
-OUTPUT_GOOD = 'autos-valid.csv'
-OUTPUT_BAD = 'FIXME-autos.csv'
+INPUT_FILE = '/Users/zieft/Local_Documents/PycharmProjects/MongoDB/lesson_3/12-Correcting_Validity/autos.csv'
+OUTPUT_GOOD = '/Users/zieft/Local_Documents/PycharmProjects/MongoDB/lesson_3/12-Correcting_Validity/autos-valid.csv'
+OUTPUT_BAD = '/Users/zieft/Local_Documents/PycharmProjects/MongoDB/lesson_3/12-Correcting_Validity/FIXME-autos.csv'
 
-def process_file(input_file, output_good, output_bad):
 
+def contain_a_year(String):
+    number_set = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
+    for i in range(4):
+        if set(String[i]).issubset(number_set):
+            return True
+        else:
+            return False
+
+
+def check_range(String):
+    year = int(String[0:4])
+    if year <= 2014 and year >= 1886:
+        return True
+    else:
+        return False
+
+
+def my_process_file(input_file, output_good, output_bad):
     with open(input_file, "r") as f:
         reader = csv.DictReader(f)
         header = reader.fieldnames
 
-        #COMPLETE THIS FUNCTION
-
+        # COMPLETE THIS FUNCTION
+        good = []
+        bad = []
+        for row in reader:
+            if contain_a_year(row['productionStartYear']):
+                if check_range(row['productionStartYear']):
+                    good.append(row)
+                else:
+                    bad.append(row)
 
 
     # This is just an example on how you can use csv.DictWriter
     # Remember that you have to output 2 files
     with open(output_good, "w") as g:
-        writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
+        writer = csv.DictWriter(g, delimiter=",", fieldnames=header)
         writer.writeheader()
-        for row in YOURDATA:
+        for row in good:
+            writer.writerow(row)
+
+    with open(output_bad, 'w') as h:
+        writer = csv.DictWriter(h, delimiter='.', fieldnames=header)
+        writer.writeheader()
+        for row in bad:
             writer.writerow(row)
 
 
 def test():
-
     process_file(INPUT_FILE, OUTPUT_GOOD, OUTPUT_BAD)
 
 
