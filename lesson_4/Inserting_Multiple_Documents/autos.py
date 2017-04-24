@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pymongo import MongoClient
 import csv
 import json
@@ -5,49 +7,75 @@ import io
 import re
 import pprint
 
-
 field_map = {
-    "name" : "name",
-    "bodyStyle_label" : "bodyStyle",
-    "assembly_label" : "assembly",
-    "class_label" : "class",
-    "designer_label" : "designer",
-    "engine_label" : "engine",
-    "length" : "length",
-    "height" : "height",
-    "width" : "width",
-    "weight" : "weight",
-    "wheelbase" : "wheelbase",
-    "layout_label" : "layout",
-    "manufacturer_label" : "manufacturer",
-    "modelEndYear" : "modelEndYear",
-    "modelStartYear" : "modelStartYear",
-    "predecessorLabel" : "predecessorLabel",
-    "productionStartYear" : "productionStartYear",
-    "productionEndYear" : "productionEndYear",
-    "transmission" : "transmission"
+    "name": "name",
+    "bodyStyle_label": "bodyStyle",
+    "assembly_label": "assembly",
+    "class_label": "class",
+    "designer_label": "designer",
+    "engine_label": "engine",
+    "length": "length",
+    "height": "height",
+    "width": "width",
+    "weight": "weight",
+    "wheelbase": "wheelbase",
+    "layout_label": "layout",
+    "manufacturer_label": "manufacturer",
+    "modelEndYear": "modelEndYear",
+    "modelStartYear": "modelStartYear",
+    "predecessorLabel": "predecessorLabel",
+    "productionStartYear": "productionStartYear",
+    "productionEndYear": "productionEndYear",
+    "transmission": "transmission"
 }
 fields = field_map.keys()
 
 
 def skip_lines(input_file, skip):
+    """
+    Skip some lines.
+    :param input_file: 
+    :param skip: 
+    :return: 
+    """
     for i in range(0, skip):
-        next(input_file)
+        next(input_file)  # Return the next item from the iterator.
+
 
 def is_number(s):
+    """
+    To check if s is a float number.
+    :param s: 
+    :return: 
+    """
     try:
         float(s)
         return True
     except ValueError:
-        return False
+        return False  # 捕获到ValueError时返回 FALSE
+
 
 def strip_automobile(v):
+    """
+    re.sub(x, y, source): 替换匹配，将x替换为y
+    \s: 空白符
+    *: 任意多个字符（包括0个）
+    :param v: 
+    :return: 
+    """
     return re.sub(r"\s*\(automobile\)\s*", " ", v)
+
 
 def strip_city(v):
     return re.sub(r"\s*\(city\)\s*", " ", v)
 
+
 def parse_array(v):
+    """
+    
+    :param v: 
+    :return: 
+    """
     if (v[0] == "{") and (v[-1] == "}"):
         v = v.lstrip("{")
         v = v.rstrip("}")
@@ -56,10 +84,12 @@ def parse_array(v):
         return v_array
     return v
 
+
 def mm_to_meters(v):
     if v < 0.01:
         return v * 1000
     return v
+
 
 def clean_dimension(d, field, v):
     if is_number(v):
@@ -67,9 +97,11 @@ def clean_dimension(d, field, v):
             d[field] = float(v) / 1000.0
         else:
             d[field] = mm_to_meters(float(v))
-    
+
+
 def clean_year(d, field, v):
     d[field] = v[0:4]
+
 
 def parse_array2(v):
     if (v[0] == "{") and (v[-1] == "}"):
@@ -80,11 +112,13 @@ def parse_array2(v):
         return (True, v_array)
     return (False, v)
 
+
 def ensure_not_array(v):
     (is_array, v) = parse_array(v)
     if is_array:
         return v[0]
     return v
+
 
 def ensure_array(v):
     (is_array, v) = parse_array2(v)
@@ -92,16 +126,19 @@ def ensure_array(v):
         return v
     return [v]
 
+
 def ensure_float(v):
     if is_number(v):
         return float(v)
+
 
 def ensure_int(v):
     if is_number(v):
         return int(v)
 
+
 def ensure_year_array(val):
-    #print "val:", val
+    # print "val:", val
     vals = ensure_array(val)
     year_vals = []
     for v in vals:
@@ -111,9 +148,16 @@ def ensure_year_array(val):
             year_vals.append(v)
     return year_vals
 
+
 def empty_val(val):
-    val = val.strip()
-    return (val == "NULL") or (val == "")
+    """
+    strip(r)是str类的一个方法，用于删除str实例中所有r所包含的字符，当r为空时，默认删除空白符。
+    :param val: 是个字符串
+    :return: 
+    """
+    val = val.strip()  # 将val中的空白符全部去掉
+    return (val == "NULL") or (val == "")  # 判断此时val是否为空或者'NULL'(来自源数据)
+
 
 def years(row, start_field, end_field):
     start_val = row[start_field]
@@ -130,16 +174,21 @@ def years(row, start_field, end_field):
         end_years = sorted(end_years)
     all_years = []
     if start_years and end_years:
-        #print start_years
-        #print end_years
+        # print start_years
+        # print end_years
         for i in range(0, min(len(start_years), len(end_years))):
-            for y in range(start_years[i], end_years[i]+1):
+            for y in range(start_years[i], end_years[i] + 1):
                 all_years.append(y)
     return all_years
 
 
 def process_file(input_file):
-    input_data = csv.DictReader(open(input_file))
+    """
+    
+    :param input_file: Example file: './autos-small.csv'
+    :return: 
+    """
+    input_data = csv.DictReader(open(input_file))  # A easier way for skipping the header
     autos = []
     skip_lines(input_data, 3)
     for row in input_data:
@@ -147,11 +196,11 @@ def process_file(input_file):
         model_years = {}
         production_years = {}
         dimensions = {}
-        for field, val in row.iteritems():
+        for field, val in row.iteritems():  # dictionary-itemiterator返回可迭代的键值对。
             if field not in fields or empty_val(val):
                 continue
             if field in ["bodyStyle_label", "class_label", "layout_label"]:
-                val = val.lower()
+                val = val.lower()  # The method lower() returns a copy of the string in which all case-based characters have been lowercased.
             val = strip_automobile(val)
             val = strip_city(val)
             val = val.strip()

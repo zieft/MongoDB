@@ -3,7 +3,8 @@
 import sys
 import os
 
-sys.path.append(os.path.split(os.path.abspath('autos'))[0])  # 将autos.py加入path，这样才能从autos中import
+os.chdir('/Users/zieft/Local_Documents/PycharmProjects/MongoDB/lesson_4/Inserting_Multiple_Documents')
+sys.path.append(os.getcwd())  # 将autos.py所在的文件夹加入到sys.path中，这样才能从autos中import函数。
 from autos import process_file
 
 
@@ -23,5 +24,5 @@ if __name__ == "__main__":
     client = MongoClient("mongodb://localhost:27017")
     db = client.examples
 
-    insert_autos('autos-small.csv', db)
+    insert_autos('/Users/zieft/Local_Documents/PycharmProjects/MongoDB/lesson_4/Inserting_Multiple_Documents/autos-small.csv', db)
     print db.autos.find_one()
